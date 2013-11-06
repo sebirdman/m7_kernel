@@ -51,18 +51,14 @@ struct apr_reset_work {
 };
 
 #define APR_Q6_CHECK_TIMEOUT 20000
-static struct delayed_work apr_q6_check_work;
-static void apr_q6_check_worker(struct work_struct *work);
+//static struct delayed_work apr_q6_check_work;
+//static void apr_q6_check_worker(struct work_struct *work);
 
-static void apr_q6_check_worker(struct work_struct *work)
-{
-	pr_info("[AUD] %s: %d\n", __func__, q6.state);
+//static void apr_q6_check_worker(struct work_struct *work)
+//{
+//	pr_info("[AUD] %s: %d\n", __func__, q6.state);
+//}
 
-	
-	if (q6.state != APR_Q6_LOADED) {
-		BUG();
-	}
-}
 
 int apr_send_pkt(void *handle, uint32_t *buf)
 {
@@ -384,9 +380,9 @@ struct apr_svc *apr_register(char *dest, char *svc_name, apr_fn svc_fn,
 	if (q6.state == APR_Q6_NOIMG) {
 
 		pr_info("[AUD] %s: Load Q6 image\n", __func__);
-		cancel_delayed_work_sync(&apr_q6_check_work);
-		queue_delayed_work(apr_reset_workqueue, &apr_q6_check_work,
-							msecs_to_jiffies(APR_Q6_CHECK_TIMEOUT));
+		//cancel_delayed_work_sync(&apr_q6_check_work);
+		//queue_delayed_work(apr_reset_workqueue, &apr_q6_check_work,
+		//					msecs_to_jiffies(APR_Q6_CHECK_TIMEOUT));
 
 		q6.pil = pil_get("q6");
 		if (IS_ERR(q6.pil)) {
@@ -688,7 +684,7 @@ static int __init apr_init(void)
 	if (!apr_reset_workqueue)
 		return -ENOMEM;
 
-	INIT_DELAYED_WORK(&apr_q6_check_work, apr_q6_check_worker);
+	//INIT_DELAYED_WORK(&apr_q6_check_work, apr_q6_check_worker);
 
 	return 0;
 }

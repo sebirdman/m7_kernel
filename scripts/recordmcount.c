@@ -302,17 +302,11 @@ do_file(char const *const fname)
 	case EM_ARM:	 reltype = R_ARM_ABS32;
 			 altmcount = "__gnu_mcount_nc";
 			 break;
-	case EM_IA_64:	 reltype = R_IA64_IMM64;   gpfx = '_'; break;
 	case EM_MIPS:	  gpfx = '_'; break;
-	case EM_PPC:	 reltype = R_PPC_ADDR32;   gpfx = '_'; break;
-	case EM_PPC64:	 reltype = R_PPC64_ADDR64; gpfx = '_'; break;
 	case EM_S390:     gpfx = '_'; break;
-	case EM_SH:	 reltype = R_SH_DIR32;                 break;
-	case EM_SPARCV9: reltype = R_SPARC_64;     gpfx = '_'; break;
 	case EM_X86_64:
 		make_nop = make_nop_x86;
 		ideal_nop = ideal_nop5_x86_64;
-		reltype = R_X86_64_64;
 		mcount_adjust_64 = -1;
 		break;
 	}  
@@ -330,14 +324,6 @@ do_file(char const *const fname)
 				"unrecognized ET_REL file: %s\n", fname);
 			fail_file();
 		}
-		if (w2(ehdr->e_machine) == EM_S390) {
-			reltype = R_390_32;
-			mcount_adjust_32 = -4;
-		}
-		if (w2(ehdr->e_machine) == EM_MIPS) {
-			reltype = R_MIPS_32;
-			is_fake_mcount32 = MIPS32_is_fake_mcount;
-		}
 		do32(ehdr, fname, reltype);
 		break;
 	case ELFCLASS64: {
@@ -349,7 +335,6 @@ do_file(char const *const fname)
 			fail_file();
 		}
 		if (w2(ghdr->e_machine) == EM_S390) {
-			reltype = R_390_64;
 			mcount_adjust_64 = -8;
 		}
 		if (w2(ghdr->e_machine) == EM_MIPS) {
